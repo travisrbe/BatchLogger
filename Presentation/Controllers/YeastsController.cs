@@ -6,18 +6,18 @@ namespace Presentation.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/[controller]")]
-    public class YeastController : ControllerBase
+    [Route("api/[controller]")] 
+    public class YeastsController : ControllerBase
     {
         private readonly IServiceManager _serviceManager;
 
-        public YeastController(IServiceManager serviceManager)
+        public YeastsController(IServiceManager serviceManager)
         {
             _serviceManager = serviceManager;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetYeasts(CancellationToken cancellationToken)
+        public async Task<IActionResult> Get(CancellationToken cancellationToken)
         {
             var yeastsDto = await _serviceManager.YeastService.GetAllAsync(cancellationToken);
 
@@ -30,6 +30,5 @@ namespace Presentation.Controllers
             var yeastDto = await _serviceManager.YeastService.GetByIdAsync(id, cancellationToken);
             return Ok(yeastDto);
         }
-
     }
 }

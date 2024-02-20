@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Domain.Repositories
+﻿namespace Domain.Repositories
 {
     public interface IRepositoryManager
     {
         IYeastRepository YeastRepository { get; }
         IBatchRepository BatchRepository { get; }
-        
+        INutrientRepository NutrientRepository { get; }
+        IUserBatchRepository UserBatchRepository { get; }
+        IBatchLogEntryRepository BatchLogEntryRepository { get; }
+        INutrientAdditionRepository NutrientAdditionRepository { get; }
         IUnitOfWork UnitOfWork {get;}
     }
 }

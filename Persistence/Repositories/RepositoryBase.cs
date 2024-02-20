@@ -21,6 +21,14 @@ namespace Persistence.Repositories
         {
             return _context.Set<T>().Where(expression).AsNoTracking();
         }
+        public async Task<IEnumerable<T>> FindByConditionAsync(Expression<Func<T, bool>> expression)
+        {
+            return await _context.Set<T>().Where(expression).AsNoTracking().ToListAsync();
+        }
+        public async Task<T?> FindSingleOrDefaultAsync(Expression<Func<T, bool>> expression)
+        {
+            return await _context.Set<T>().Where(expression).AsNoTracking().SingleOrDefaultAsync();
+        }
         public void Create(T entity)
         {
             _context.Set<T>().Add(entity);
@@ -29,8 +37,13 @@ namespace Persistence.Repositories
         {
             _context.Set<T>().Update(entity);
         }
-
         public void Delete(T entity)
+        {
+            _context.Set<T>().Update(entity);
+        }
+
+        [Obsolete ("Did you mean to use \"Delete\" instead?")]
+        public void HardDelete(T entity)
         {
             _context.Set<T>().Remove(entity);
         }

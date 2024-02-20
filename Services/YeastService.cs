@@ -1,13 +1,8 @@
 ﻿using Contracts;
-using Domain.Repositories;
-using Service.Abstractions;
-using Mapster;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Domain.Exceptions;
+using Domain.Repositories;
+using Mapster;
+using Service.Abstractions;
 
 namespace Services
 {
@@ -37,5 +32,20 @@ namespace Services
             var yeastDto = yeast.Adapt<YeastDto>();
             return yeastDto;
         }
+
+        //Add-back during admin sprint
+        //public async Task Delete(Guid yeastId, CancellationToken cancellationToken = default)
+        //{
+        //    var yeast = await _repositoryManager.YeastRepository.GetByIdAsync(yeastId, cancellationToken);
+        //    if (yeast == null)
+        //    {
+        //        throw new YeastNotFoundException(yeastId);
+        //    }
+        //    else
+        //    {
+        //        _repositoryManager.YeastRepository.Delete(yeast);
+        //        await _repositoryManager.UnitOfWork.SaveChangesAsync();
+        //    }
+        //}
     }
 }

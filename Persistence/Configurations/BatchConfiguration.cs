@@ -40,9 +40,9 @@ namespace Persistence.Configurations
                 .WithMany(batch => batch.Batches)
                 .HasForeignKey(batch => batch.YeastId);
 
-            builder.HasOne(batch => batch.Creator)
+            builder.HasOne(batch => batch.Owner)
                 .WithMany(batch => batch.CreatedBatches)
-                .HasForeignKey(batch => batch.CreatorUserId);
+                .HasForeignKey(batch => batch.OwnerUserId);
         }
     }
 }

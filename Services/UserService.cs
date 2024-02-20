@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Services
 {
-    public class UserService : IUserService
+    internal sealed class UserService : IUserService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         public UserService(IHttpContextAccessor httpContextAccessor)

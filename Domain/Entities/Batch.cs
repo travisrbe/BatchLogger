@@ -32,8 +32,8 @@ namespace Domain.Entities
         public bool Complete { get; set; } = false;
         public bool IsDeleted { get; set; }
 
-        public String CreatorUserId { get; set; } = string.Empty;
-        public virtual User Creator { get; set; } = null!;
+        public String OwnerUserId { get; set; } = string.Empty;
+        public virtual User Owner { get; set; } = null!;
 
         public Guid YeastId { get; set; }
         public virtual Yeast Yeast { get; set; } = null!;

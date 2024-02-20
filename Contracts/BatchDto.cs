@@ -8,6 +8,7 @@ namespace Contracts
 {
     public class BatchDto
     {
+        public Guid Id { get; set; }
         public double SpecificGravity { get; set; }
         public int OffsetYanPpm { get; set; }
         public double VolumeLiters { get; set; }
@@ -21,9 +22,8 @@ namespace Contracts
         public int? RemainderNutrientId { get; set; }
         public double? RemainderNutrientGrams { get; set; }
         public bool Complete { get; set; } = false;
-        public bool IsDeleted { get; set; }
 
-        public String CreatorUserId { get; set; } = null!;
+        public String OwnerUserId { get; set; } = null!;
         public Guid? YeastId { get; set; }
     }
 }

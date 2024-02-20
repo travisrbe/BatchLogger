@@ -22,10 +22,9 @@ namespace Persistence.Repositories
             {
                 return _context.SaveChangesAsync(cancellationToken);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-
-                throw ex;
+                throw;
             }
         }
     }
