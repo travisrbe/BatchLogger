@@ -14,6 +14,8 @@ namespace Domain.Entities
         public double? SpecificGravityReading { get; set; }
         public double? pHReading { get; set; }
         public bool IsDeleted { get; set; }
+        public DateTime? CreateDate { get; set; } = null;
+        public DateTime? UpdateDate { get; set; } = null;
 
         public Guid BatchId { get; set; }
         public virtual Batch Batch { get; set; } = null!;

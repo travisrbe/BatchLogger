@@ -56,15 +56,16 @@ namespace Services
         public async Task<BatchDto> Update(string userId, BatchDto batchDto, CancellationToken cancellationToken = default)
         {
             //get the batch, check if null
-            var DbBatchDto = await _repositoryManager.BatchRepository.GetByIdAsync(batchDto.Id, cancellationToken) 
+            var dbBatch = await _repositoryManager.BatchRepository.GetByIdAsync(batchDto.Id, cancellationToken) 
                 ?? throw new BatchNotFoundException(batchDto.Id);
             //check if user really owns it
-            if (DbBatchDto.OwnerUserId != userId)
+            if (dbBatch.OwnerUserId != userId)
             {
-                throw new UserDoesNotOwnBatchException(userId, DbBatchDto.Id);
+                throw new UserDoesNotOwnBatchException(userId, dbBatch.Id);
             }
 
             //update
+            batchDto.UpdateDate = DateTime.UtcNow;
             Batch batch = batchDto.Adapt<Batch>();
             _repositoryManager.BatchRepository.Update(batch);
             await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
@@ -74,6 +75,8 @@ namespace Services
 
         public async Task<BatchDto> Create(BatchDto batchDto, CancellationToken cancellationToken = default)
         {
+            batchDto.CreateDate = DateTime.UtcNow;
+            batchDto.UpdateDate = DateTime.UtcNow;
             Batch batch = batchDto.Adapt<Batch>();
             _repositoryManager.BatchRepository.Create(batch);
             await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
@@ -85,18 +88,33 @@ namespace Services
         public async Task<BatchDto> Delete(string userId, BatchDto batchDto, CancellationToken cancellationToken = default)
         {
             //get the batch, check if null
-            var DbBatchDto = await _repositoryManager.BatchRepository.GetByIdAsync(batchDto.Id, cancellationToken)
+            var DbBatch = await _repositoryManager.BatchRepository.GetByIdAsync(batchDto.Id, cancellationToken)
                 ?? throw new BatchNotFoundException(batchDto.Id);
             //check if user really owns it
-            if (DbBatchDto.OwnerUserId != userId)
+            if (DbBatch.OwnerUserId != userId)
             {
-                throw new UserDoesNotOwnBatchException(userId, DbBatchDto.Id);
+                throw new UserDoesNotOwnBatchException(userId, DbBatch.Id);
             }
 
             //update
-            Batch batch = batchDto.Adapt<Batch>();
-            batch.IsDeleted = true;
-            _repositoryManager.BatchRepository.Delete(batch);
+            foreach (var na in DbBatch.NutrientAdditions)
+            {
+                na.IsDeleted = true;
+                _repositoryManager.NutrientAdditionRepository.Delete(na);
+            }
+            foreach (var le in DbBatch.LogEntries)
+            {
+                le.IsDeleted = true;
+                _repositoryManager.BatchLogEntryRepository.Delete(le);
+            }
+            foreach (var ub in DbBatch.UserBatches)
+            {
+                ub.IsDeleted = true;
+                _repositoryManager.UserBatchRepository.Delete(ub);
+            }
+
+            DbBatch.IsDeleted = true;
+            _repositoryManager.BatchRepository.Delete(DbBatch);
             await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
             return batchDto;
         }

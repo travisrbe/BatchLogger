@@ -1,11 +1,6 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Persistence.Configurations
 {
@@ -15,10 +10,14 @@ namespace Persistence.Configurations
         {
             builder.ToTable(nameof(BatchLogEntry));
             builder.HasKey(log => log.Id);
-            builder.Property(log => log.Id).ValueGeneratedOnAdd();
-            builder.Property(log => log.LogText).HasMaxLength(2048);
-            builder.Property(log => log.BatchId).IsRequired();
-            builder.Property(log => log.UserId).IsRequired();
+            builder.Property(log => log.Id)
+                .ValueGeneratedOnAdd();
+            builder.Property(log => log.LogText)
+                .HasMaxLength(2048);
+            builder.Property(log => log.BatchId)
+                .IsRequired();
+            builder.Property(log => log.UserId)
+                .IsRequired();
 
             //Relationships
             builder.HasOne(log => log.Batch)

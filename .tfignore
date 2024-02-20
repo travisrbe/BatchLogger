@@ -42,3 +42,4 @@
 
 \.gitignore
 \.git
+\.vs\BatchLogger\FileContentIndex

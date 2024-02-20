@@ -31,6 +31,8 @@ namespace Domain.Entities
         public double? RemainderNutrientGrams { get; set; }
         public bool Complete { get; set; } = false;
         public bool IsDeleted { get; set; }
+        public DateTime? CreateDate { get; set; }
+        public DateTime? UpdateDate { get; set; }
 
         public String OwnerUserId { get; set; } = string.Empty;
         public virtual User Owner { get; set; } = null!;

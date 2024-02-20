@@ -42,20 +42,23 @@ namespace Persistence.Repositories
         public async Task<Batch?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             return await FindByCondition(x => x.Id == id && x.IsDeleted == false)
+                .Include(b => b.UserBatches)
+                .Include(b => b.LogEntries)
+                .Include(b => b.NutrientAdditions)
                 .SingleOrDefaultAsync(cancellationToken);
         }
         public async Task<IEnumerable<Batch?>> GetUserBatchesAsync(string userId, CancellationToken cancellationToken)
         {
             //this selects the UserBatches associated with the userId (saved for later)
-            var result2 = await _context.Batches
-                .SelectMany(b => b.UserBatches)
-                .Where(ub => ub.UserId == userId)
-                .ToListAsync(cancellationToken);
+            //var result2 = await _context.Batches
+            //    .SelectMany(b => b.UserBatches)
+            //    .Where(ub => ub.UserId == userId)
+            //    .ToListAsync(cancellationToken);
 
             var result = await _context.Batches
                 .Where(b => b.UserBatches
-                    .Any(x => x.UserId == userId && x.IsDeleted == false))
-                .ToListAsync(cancellationToken);
+                    .Any(x => x.UserId == userId && x.IsDeleted == false)
+                ).ToListAsync(cancellationToken);
             return result;
         }
         public async Task<IEnumerable<Batch?>> GetOwnedBatchesAsync(string userId, CancellationToken cancellationToken)

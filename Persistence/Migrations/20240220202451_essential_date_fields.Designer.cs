@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -11,9 +12,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240220202451_essential_date_fields")]
+    partial class essential_date_fields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,10 +39,10 @@ namespace Persistence.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
-                    b.Property<DateTime?>("CreateDate")
+                    b.Property<DateTime>("CreateDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("Ingredients")
                         .IsRequired()
@@ -86,10 +89,10 @@ namespace Persistence.Migrations
                     b.Property<double?>("TotalTargetYanPpm")
                         .HasColumnType("float");
 
-                    b.Property<DateTime?>("UpdateDate")
+                    b.Property<DateTime>("UpdateDate")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<double>("VolumeLiters")
                         .ValueGeneratedOnAdd()
@@ -117,10 +120,10 @@ namespace Persistence.Migrations
                     b.Property<Guid>("BatchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreateDate")
+                    b.Property<DateTime>("CreateDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -133,10 +136,10 @@ namespace Persistence.Migrations
                     b.Property<double?>("SpecificGravityReading")
                         .HasColumnType("float");
 
-                    b.Property<DateTime?>("UpdateDate")
+                    b.Property<DateTime>("UpdateDate")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("UserId")
                         .IsRequired()

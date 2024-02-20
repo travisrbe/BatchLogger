@@ -22,6 +22,8 @@ namespace Contracts
         public int? RemainderNutrientId { get; set; }
         public double? RemainderNutrientGrams { get; set; }
         public bool Complete { get; set; } = false;
+        public DateTime? CreateDate { get; set; }
+        public DateTime? UpdateDate { get; set; }
 
         public String OwnerUserId { get; set; } = null!;
         public Guid? YeastId { get; set; }
