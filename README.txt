@@ -12,7 +12,7 @@ To run this project:
 2. Install your preferred version of Sql Server. I used Express.
 3. In appsettings.json, update the ConnectionStrings:Development value to point to your server, if necessary.
 4. The first time you build, it should attempt to restore NuGet packages. If it does not, right click on the Solution file and select "Restore Nuget Packages."
-5. Open the Pacakge Manager Console, point the Default project to "Persistence" and run `Update-Database` to generate tables. There is currently no script to generate seed data.
+5. Open the Package Manager Console, point the Default project to "Persistence" and run `Update-Database` to generate tables. There is currently no script to generate seed data.
 6. Run the application. You will have to use Postman or Swagger to hit the account/register and account/login endpoints - other controller actions require authorization.
 
 Organization:
