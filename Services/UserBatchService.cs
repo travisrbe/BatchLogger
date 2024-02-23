@@ -29,8 +29,9 @@ namespace Services
             string assignedUserId = string.Empty;
             if (collaboratorToken != Guid.Empty)
             {
-                assignedUserId = _repositoryManager.UserRepository.GetUserIdFromCollaboratorToken(collaboratorToken, cancellationToken).Result.Id
+                User assignedUser = _repositoryManager.UserRepository.GetUserIdFromCollaboratorToken(collaboratorToken, cancellationToken).Result
                     ?? throw new UserCollaborationTokenNotFoundException(collaboratorToken);
+                assignedUserId = assignedUser.Id;
             }
             else
             {

@@ -25,10 +25,11 @@ namespace Persistence.Configurations
                 .HasDefaultValue(false);
             builder.Property(batch => batch.IsDeleted)
                 .HasDefaultValue(false);
+            builder.Property(batch => batch.IsNutrientLocked)
+                .HasDefaultValue(false);
             builder.Property(batch => batch.YeastId)
                 .HasDefaultValue(null)
                 .IsRequired();
-
 
             //Relationships
             builder.HasOne(batch => batch.Yeast)

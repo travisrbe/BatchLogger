@@ -15,8 +15,6 @@ namespace Persistence.Repositories
         new public void Update(BatchLogEntry batchLogEntry)
         {
             _context.Update(batchLogEntry);
-            _context.Entry(batchLogEntry).Property(x => x.UpdateDate).IsModified = false;
-            _context.Entry(batchLogEntry).Property(x => x.CreateDate).IsModified = false;
         }
     }
 }

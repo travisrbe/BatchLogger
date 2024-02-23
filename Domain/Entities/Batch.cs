@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -10,6 +11,22 @@ namespace Domain.Entities
 {
     public class Batch
     {
+        public Batch(double specificGravity, 
+            int offsetYanPpm, 
+            double volumeLiters,
+            string ownerUserId,
+            Guid yeastId)
+        {
+            SpecificGravity = specificGravity;
+            OffsetYanPpm = offsetYanPpm;
+            VolumeLiters = volumeLiters;
+            OwnerUserId = ownerUserId;
+            YeastId = yeastId;
+
+            LogEntries = [];
+            NutrientAdditions = [];
+            UserBatches = [];
+        }
         //database generated
         public Guid Id { get; set; }
 
@@ -19,8 +36,10 @@ namespace Domain.Entities
         public double VolumeLiters { get; set; }
 
         //optional inputs
-        public string Ingredients { get; set; } = string.Empty;
-        public string Process { get; set; } = string.Empty;
+        [MaxLength(2048)]
+        public string? Ingredients { get; set; }
+        [MaxLength(2048)]
+        public string? Process { get; set; }
 
         //calculated
         public double? Brix { get; set; }
@@ -32,18 +51,19 @@ namespace Domain.Entities
         public double? RemainderNutrientGrams { get; set; }
         public bool IsComplete { get; set; }
         public bool IsDeleted { get; set; }
-        public bool NutrientAdditionsLocked { get; set; }
+        public bool IsNutrientLocked { get; set; }
         public DateTime? CreateDate { get; set; }
         public DateTime? UpdateDate { get; set; }
 
-        public String OwnerUserId { get; set; } = string.Empty;
+        [MaxLength(450)]
+        public String OwnerUserId { get; set; }
         public virtual User Owner { get; set; } = null!;
 
         public Guid YeastId { get; set; }
         public virtual Yeast Yeast { get; set; } = null!;
 
-        public virtual ICollection<BatchLogEntry> LogEntries { get; set; } = [];
-        public virtual ICollection<NutrientAddition> NutrientAdditions { get; set; } = [];
-        public virtual ICollection<UserBatch> UserBatches { get; set; } = null!;
+        public virtual ICollection<BatchLogEntry> LogEntries { get; set; }
+        public virtual ICollection<NutrientAddition> NutrientAdditions { get; set; }
+        public virtual ICollection<UserBatch> UserBatches { get; set; }
     }
 }

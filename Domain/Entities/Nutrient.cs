@@ -4,9 +4,16 @@ namespace Domain.Entities
 {
     public class Nutrient
     {
+        public Nutrient(string name, string manufacturer) 
+        {
+            Name = name;
+            Manufacturer = manufacturer;
+        }
         public Guid Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Manufacturer { get; set; } = string.Empty;
+        [MaxLength(256)]
+        public string Name { get; set; }
+        [MaxLength(256)]
+        public string Manufacturer { get; set; }
         public double? MaxGramsPerLiter { get; set; }
         public int YanPpmPerGram { get; set; }
         public double EffectivenessMutiplier { get; set; }

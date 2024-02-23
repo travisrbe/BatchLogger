@@ -18,7 +18,8 @@ namespace Persistence.Repositories
         public async Task<bool> UserOwnsBatch (string userId, Guid batchId, CancellationToken cancellationToken)
         {
             Batch? batch = await FindByCondition(x => x.Id == batchId && x.IsDeleted == false)
-                .SingleOrDefaultAsync(cancellationToken) ?? throw new BatchNotFoundException(batchId);
+                .SingleOrDefaultAsync(cancellationToken) 
+                ?? throw new BatchNotFoundException(batchId);
             return batch.OwnerUserId == userId;
         }
         public async Task<bool> UserContributesBatch(string userId, Guid batchId, CancellationToken cancellationToken)
@@ -26,7 +27,8 @@ namespace Persistence.Repositories
             Batch? batch = await FindByCondition(x => x.Id == batchId && x.IsDeleted == false)
                 .Include(x => x.UserBatches
                     .Where(b => b.IsDeleted == false))
-                .SingleOrDefaultAsync() ?? throw new BatchNotFoundException(batchId);
+                .SingleOrDefaultAsync() 
+                ?? throw new BatchNotFoundException(batchId);
 
             if (batch.UserBatches.Where(x => x.UserId == userId && x.IsDeleted == false).FirstOrDefault() == null)
             {
@@ -49,7 +51,8 @@ namespace Persistence.Repositories
                     .Where(le => le.IsDeleted == false))
                 .Include(b => b.NutrientAdditions
                     .Where(na => na.IsDeleted == false))
-                .SingleOrDefaultAsync(cancellationToken);
+                .SingleOrDefaultAsync(cancellationToken)
+                ?? throw new BatchNotFoundException(id);
         }
         public async Task<IEnumerable<Batch?>> GetUserBatchesAsync(string userId, CancellationToken cancellationToken)
         {
@@ -70,8 +73,6 @@ namespace Persistence.Repositories
         new public void Update(Batch batch)
         {
             _context.Update(batch);
-            _context.Entry(batch).Property(x => x.UpdateDate).IsModified = false;
-            _context.Entry(batch).Property(x => x.CreateDate).IsModified = false;
         }
     }
 }

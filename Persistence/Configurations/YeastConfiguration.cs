@@ -10,12 +10,14 @@ namespace Persistence.Configurations
         {
             builder.ToTable(nameof(Yeast));
             builder.HasKey(yeast => yeast.Id);
-            builder.Property(yeast => yeast.Id).ValueGeneratedOnAdd();
-            builder.Property(yeast => yeast.Manufacturer).HasMaxLength(128);
-            builder.Property(yeast => yeast.Brand).HasMaxLength(128);
-            builder.Property(yeast => yeast.Name).HasMaxLength(128);
-            builder.Property(yeast => yeast.NutrientReqMult).IsRequired();
-            builder.Property(yeast => yeast.NutrientReqMult).HasDefaultValue((double)0.9);
+            builder.Property(yeast => yeast.Id)
+                .ValueGeneratedOnAdd();
+            builder.Property(yeast => yeast.NutrientReqMult)
+                .IsRequired();
+            builder.Property(yeast => yeast.NutrientReqMult)
+                .HasDefaultValue((double)0.9);
+            builder.Property(yeast => yeast.IsDeleted)
+                .HasDefaultValue(false);
         }
     }
 }

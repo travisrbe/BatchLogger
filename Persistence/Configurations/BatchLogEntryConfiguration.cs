@@ -12,8 +12,6 @@ namespace Persistence.Configurations
             builder.HasKey(log => log.Id);
             builder.Property(log => log.Id)
                 .ValueGeneratedOnAdd();
-            builder.Property(log => log.LogText)
-                .HasMaxLength(2048);
             builder.Property(log => log.BatchId)
                 .IsRequired();
             builder.Property(log => log.UserId)

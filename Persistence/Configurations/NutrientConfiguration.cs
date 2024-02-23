@@ -12,16 +12,14 @@ namespace Persistence.Configurations
             builder.HasKey(nc => nc.Id);
             builder.Property(nc => nc.Id)
                 .ValueGeneratedOnAdd();
-            builder.Property(nc => nc.Name)
-                .HasMaxLength(128)
-                .IsRequired();
-            builder.Property(nc => nc.Manufacturer)
-                .HasMaxLength(128);
             builder.Property(nc => nc.YanPpmPerGram)
-                .IsRequired();
+                .IsRequired()
+                .HasDefaultValue(0);
             builder.Property(nc => nc.EffectivenessMutiplier)
                 .IsRequired()
                 .HasDefaultValue(1);
+            builder.Property(na => na.IsDeleted)
+                .HasDefaultValue(false);
         }
     }
 }

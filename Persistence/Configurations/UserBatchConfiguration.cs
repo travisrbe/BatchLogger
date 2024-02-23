@@ -14,6 +14,8 @@ namespace Persistence.Configurations
                 .IsRequired();
             builder.Property(ub => ub.BatchId)
                 .IsRequired();
+            builder.Property(ub => ub.IsDeleted)
+                .HasDefaultValue(false);
 
             builder.HasOne(ub => ub.User)
                 .WithMany(ub => ub.UserBatches)
