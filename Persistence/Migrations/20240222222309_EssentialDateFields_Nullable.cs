@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class essential_date_fields_updated : Migration
+    public partial class EssentialDateFields_Nullable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,40 +16,32 @@ namespace Persistence.Migrations
                 table: "BatchLogEntry",
                 type: "datetime2",
                 nullable: true,
-                defaultValueSql: "GETUTCDATE()",
                 oldClrType: typeof(DateTime),
-                oldType: "datetime2",
-                oldDefaultValueSql: "GETDATE()");
+                oldType: "datetime2");
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "CreateDate",
                 table: "BatchLogEntry",
                 type: "datetime2",
                 nullable: true,
-                defaultValueSql: "GETUTCDATE()",
                 oldClrType: typeof(DateTime),
-                oldType: "datetime2",
-                oldDefaultValueSql: "GETDATE()");
+                oldType: "datetime2");
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "UpdateDate",
                 table: "Batch",
                 type: "datetime2",
                 nullable: true,
-                defaultValueSql: "GETUTCDATE()",
                 oldClrType: typeof(DateTime),
-                oldType: "datetime2",
-                oldDefaultValueSql: "GETDATE()");
+                oldType: "datetime2");
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "CreateDate",
                 table: "Batch",
                 type: "datetime2",
                 nullable: true,
-                defaultValueSql: "GETUTCDATE()",
                 oldClrType: typeof(DateTime),
-                oldType: "datetime2",
-                oldDefaultValueSql: "GETDATE()");
+                oldType: "datetime2");
         }
 
         /// <inheritdoc />
@@ -60,44 +52,40 @@ namespace Persistence.Migrations
                 table: "BatchLogEntry",
                 type: "datetime2",
                 nullable: false,
-                defaultValueSql: "GETDATE()",
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2",
-                oldNullable: true,
-                oldDefaultValueSql: "GETUTCDATE()");
+                oldNullable: true);
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "CreateDate",
                 table: "BatchLogEntry",
                 type: "datetime2",
                 nullable: false,
-                defaultValueSql: "GETDATE()",
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2",
-                oldNullable: true,
-                oldDefaultValueSql: "GETUTCDATE()");
+                oldNullable: true);
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "UpdateDate",
                 table: "Batch",
                 type: "datetime2",
                 nullable: false,
-                defaultValueSql: "GETDATE()",
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2",
-                oldNullable: true,
-                oldDefaultValueSql: "GETUTCDATE()");
+                oldNullable: true);
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "CreateDate",
                 table: "Batch",
                 type: "datetime2",
                 nullable: false,
-                defaultValueSql: "GETDATE()",
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2",
-                oldNullable: true,
-                oldDefaultValueSql: "GETUTCDATE()");
+                oldNullable: true);
         }
     }
 }

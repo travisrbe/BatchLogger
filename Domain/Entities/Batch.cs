@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -29,8 +30,9 @@ namespace Domain.Entities
         public double? RemainderPpmNeeded { get; set; }
         public int? RemainderNutrientId { get; set; }
         public double? RemainderNutrientGrams { get; set; }
-        public bool Complete { get; set; } = false;
+        public bool IsComplete { get; set; }
         public bool IsDeleted { get; set; }
+        public bool NutrientAdditionsLocked { get; set; }
         public DateTime? CreateDate { get; set; }
         public DateTime? UpdateDate { get; set; }
 

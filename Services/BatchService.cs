@@ -20,12 +20,25 @@ namespace Services
         {
             _repositoryManager = repositoryManager;
         }
+        public async Task<BatchDto> Create(BatchDto batchDto, CancellationToken cancellationToken = default)
+        {
+            Batch batch = batchDto.Adapt<Batch>();
+            _repositoryManager.BatchRepository.Create(batch);
+            await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
 
+            //Return the batch from database to reflect accurate datetimes
+            Guid savedBatchId = batch.Id;
+            batch = await _repositoryManager.BatchRepository.GetByIdAsync(savedBatchId, cancellationToken) 
+                ?? throw new BatchNotFoundException(savedBatchId);
+
+            //EF hydrates this with auto-generated values like Id.
+            return batch.Adapt<BatchDto>();
+        }
         public async Task<IEnumerable<BatchDto?>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             var batches = await _repositoryManager.BatchRepository.GetAllAsync(cancellationToken);
             var batchesDto = batches.Adapt<IEnumerable<BatchDto>>();
-            return batchesDto;
+            return batchesDto.OrderByDescending(b => b.CreateDate);
         }
 
         public async Task<BatchDto> GetByIdAsync(string userId, Guid id, CancellationToken cancellationToken = default)
@@ -44,14 +57,13 @@ namespace Services
         {
             var batches = await _repositoryManager.BatchRepository.GetUserBatchesAsync(id, cancellationToken);
             var batchesDto = batches.Adapt<IEnumerable<BatchDto>>();
-            return batchesDto;
+            return batchesDto.OrderByDescending(b => b.CreateDate);
         }
-
         public async Task<IEnumerable<BatchDto?>> GetByOwnedAsync(string id, CancellationToken cancellationToken = default)
         {
             var batches = await _repositoryManager.BatchRepository.GetOwnedBatchesAsync(id, cancellationToken);
             var batchesDto = batches.Adapt<IEnumerable<BatchDto>>();
-            return batchesDto;
+            return batchesDto.OrderByDescending(b => b.CreateDate);
         }
         public async Task<BatchDto> Update(string userId, BatchDto batchDto, CancellationToken cancellationToken = default)
         {
@@ -63,28 +75,17 @@ namespace Services
             {
                 throw new UserDoesNotOwnBatchException(userId, dbBatch.Id);
             }
-
-            //update
-            batchDto.UpdateDate = DateTime.UtcNow;
             Batch batch = batchDto.Adapt<Batch>();
             _repositoryManager.BatchRepository.Update(batch);
             await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
-            return batchDto;
-            
-        }
 
-        public async Task<BatchDto> Create(BatchDto batchDto, CancellationToken cancellationToken = default)
-        {
-            batchDto.CreateDate = DateTime.UtcNow;
-            batchDto.UpdateDate = DateTime.UtcNow;
-            Batch batch = batchDto.Adapt<Batch>();
-            _repositoryManager.BatchRepository.Create(batch);
-            await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
+            //Return the batch from database to reflect accurate datetimes
+            Guid savedBatchId = batch.Id;
+            batch = await _repositoryManager.BatchRepository.GetByIdAsync(savedBatchId, cancellationToken)
+                ?? throw new BatchNotFoundException(savedBatchId);
 
-            //EF hydrates this with auto-generated values like Id.
             return batch.Adapt<BatchDto>();
         }
-
         public async Task<BatchDto> Delete(string userId, BatchDto batchDto, CancellationToken cancellationToken = default)
         {
             //get the batch, check if null

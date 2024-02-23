@@ -12,8 +12,10 @@ namespace Domain.Entities
         public string ChosenName { get; set; } = string.Empty;
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
-        public Guid CollaboratorToken { get; set; } = new Guid();
+        public Guid CollaboratorToken { get; set; }
         public bool IsDeleted { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime UpdateDate { get; set; }
 
         public virtual ICollection<Batch> CreatedBatches { get; set; } = null!;
         public virtual ICollection<BatchLogEntry> LogEntries { get; set; } = null!;

@@ -8,7 +8,7 @@ namespace Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Batch> builder)
         {
-            builder.ToTable(nameof(Batch));
+            builder.ToTable(nameof(Batch), b => b.HasTrigger("Batch_INSERT"));
             builder.HasKey(batch => batch.Id);
             builder.Property(batch => batch.Id)
                 .ValueGeneratedOnAdd();
@@ -21,7 +21,7 @@ namespace Persistence.Configurations
             builder.Property(batch => batch.VolumeLiters)
                 .HasDefaultValue(19)
                 .IsRequired();
-            builder.Property(batch => batch.Complete)
+            builder.Property(batch => batch.IsComplete)
                 .HasDefaultValue(false);
             builder.Property(batch => batch.IsDeleted)
                 .HasDefaultValue(false);

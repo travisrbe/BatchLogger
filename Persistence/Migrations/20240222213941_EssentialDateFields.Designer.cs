@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -11,9 +12,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240222213941_EssentialDateFields")]
+    partial class EssentialDateFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,25 +34,22 @@ namespace Persistence.Migrations
                     b.Property<double?>("Brix")
                         .HasColumnType("float");
 
-                    b.Property<DateTime?>("CreateDate")
+                    b.Property<bool>("Complete")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Ingredients")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsComplete")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
-
-                    b.Property<bool>("NutrientAdditionsLocked")
-                        .HasColumnType("bit");
 
                     b.Property<int>("OffsetYanPpm")
                         .ValueGeneratedOnAdd()
@@ -87,7 +87,7 @@ namespace Persistence.Migrations
                     b.Property<double?>("TotalTargetYanPpm")
                         .HasColumnType("float");
 
-                    b.Property<DateTime?>("UpdateDate")
+                    b.Property<DateTime>("UpdateDate")
                         .HasColumnType("datetime2");
 
                     b.Property<double>("VolumeLiters")
@@ -104,12 +104,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("YeastId");
 
-                    b.ToTable("Batch", null, t =>
-                        {
-                            t.HasTrigger("Batch_INSERT");
-                        });
-
-                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
+                    b.ToTable("Batch", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.BatchLogEntry", b =>
@@ -121,7 +116,7 @@ namespace Persistence.Migrations
                     b.Property<Guid>("BatchId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("CreateDate")
+                    b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
@@ -135,7 +130,7 @@ namespace Persistence.Migrations
                     b.Property<double?>("SpecificGravityReading")
                         .HasColumnType("float");
 
-                    b.Property<DateTime?>("UpdateDate")
+                    b.Property<DateTime>("UpdateDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
@@ -151,12 +146,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("BatchLogEntry", null, t =>
-                        {
-                            t.HasTrigger("BatchLogEntry_INSERT");
-                        });
-
-                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
+                    b.ToTable("BatchLogEntry", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Nutrient", b =>
@@ -242,17 +232,11 @@ namespace Persistence.Migrations
 
                     b.Property<Guid>("CollaboratorToken")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -302,11 +286,6 @@ namespace Persistence.Migrations
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)

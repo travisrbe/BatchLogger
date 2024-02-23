@@ -14,7 +14,7 @@ namespace Services
         {
             _repositoryManager = repositoryManager;
         }
-        public async Task<UserBatchDto> Create(string userId, Guid batchId, CancellationToken cancellationToken = default)
+        public async Task<UserBatchDto> Create(string userId, Guid batchId, Guid collaboratorToken = new Guid(), CancellationToken cancellationToken = default)
         {
             //query db for the batch
             Batch? batch = await _repositoryManager.BatchRepository.GetByIdAsync(batchId, cancellationToken)
@@ -24,15 +24,28 @@ namespace Services
             {
                 throw new UserDoesNotOwnBatchException(userId, batch.Id);
             }
+
+            //Assign to either userId or the userId belonging to the collaborationToken.
+            string assignedUserId = string.Empty;
+            if (collaboratorToken != Guid.Empty)
+            {
+                assignedUserId = _repositoryManager.UserRepository.GetUserIdFromCollaboratorToken(collaboratorToken, cancellationToken).Result.Id
+                    ?? throw new UserCollaborationTokenNotFoundException(collaboratorToken);
+            }
+            else
+            {
+                assignedUserId = userId;
+            }
+
             //check for duplication
             var dbUserBatch = _repositoryManager.UserBatchRepository
-                .FindByCondition(x => x.UserId == userId && x.BatchId == batchId) 
+                .FindByCondition(x => x.UserId == assignedUserId && x.BatchId == batchId) 
                 ?? throw new UserBatchAlreadyExistsException(userId, batchId);
 
             //create and return
             UserBatch userBatch = new UserBatch()
             {
-                UserId = userId,
+                UserId = assignedUserId,
                 BatchId = batchId
             };
             _repositoryManager.UserBatchRepository.Create(userBatch);

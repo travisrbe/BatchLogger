@@ -32,16 +32,66 @@ namespace Services
 
             if (UserOwnsBatch || UserContributesBatch)
             {
-                batchLogEntryDto.CreateDate = DateTime.UtcNow;
-                batchLogEntryDto.UpdateDate = DateTime.UtcNow;
                 BatchLogEntry batchLogEntry = batchLogEntryDto.Adapt<BatchLogEntry>();
                 _repositoryManager.BatchLogEntryRepository.Create(batchLogEntry);
                 await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
+
+                //Return the Log Entry from database to reflect accurate datetimes
+                Guid savedBatchLogEntryId = batchLogEntry.Id;
+                batchLogEntry = await _repositoryManager.BatchLogEntryRepository
+                    .FindSingleOrDefaultAsync(x => x.Id == savedBatchLogEntryId)
+                    ?? throw new BatchLogEntryNotFoundException(savedBatchLogEntryId);
+
                 return batchLogEntry.Adapt<BatchLogEntryDto>();
             }
             else
             {
                 throw new UserNotAuthorizedException(batchLogEntryDto.UserId, batchLogEntryDto.BatchId);
+            }
+        }
+        public async Task<IEnumerable<BatchLogEntryDto>> GetBatchLogEntries(string userId, Guid batchId, CancellationToken cancellationToken = default)
+        {
+            var UserOwnsBatch = await _repositoryManager.BatchRepository
+                .UserOwnsBatch(userId, batchId, cancellationToken);
+            var UserContributesBatch = await _repositoryManager.BatchRepository
+                .UserContributesBatch(userId, batchId, cancellationToken);
+            if (UserOwnsBatch || UserContributesBatch)
+            {
+                var BatchLogEntries = _repositoryManager.BatchLogEntryRepository
+                    .GetBatchLogEntries(userId, batchId, cancellationToken);
+                return BatchLogEntries.Adapt<IEnumerable<BatchLogEntryDto>>()
+                    .OrderByDescending(x => x.UpdateDate);
+            }
+            else
+            {
+                throw new UserNotAuthorizedException(userId, batchId);
+            }
+        }
+        public async Task<BatchLogEntryDto> Update(string userId, BatchLogEntryDto batchLogEntryDto, CancellationToken cancellationToken = default)
+        {
+            var UserOwnsBatch = await _repositoryManager.BatchRepository
+                .UserOwnsBatch(batchLogEntryDto.UserId, batchLogEntryDto.BatchId, cancellationToken);
+            var dbBatchLogEntry = _repositoryManager.BatchLogEntryRepository
+                .FindByCondition(x => x.Id == batchLogEntryDto.Id).SingleOrDefaultAsync().Result
+                ?? throw new BatchLogEntryNotFoundException(batchLogEntryDto.BatchId);
+
+            if (UserOwnsBatch || dbBatchLogEntry.UserId == userId)
+            {
+                BatchLogEntry batchLogEntry = batchLogEntryDto.Adapt<BatchLogEntry>();
+                _repositoryManager.BatchLogEntryRepository.Update(batchLogEntry);
+                await _repositoryManager.UnitOfWork.SaveChangesAsync();
+
+                //Return the batch from database to reflect accurate datetimes
+                Guid savedBatchLogEntryId = batchLogEntry.Id;
+                batchLogEntry = await _repositoryManager.BatchLogEntryRepository
+                    .FindSingleOrDefaultAsync(x => x.Id == savedBatchLogEntryId)
+                    ?? throw new BatchLogEntryNotFoundException(savedBatchLogEntryId);
+
+                return batchLogEntry.Adapt<BatchLogEntryDto>();
+            }
+            else
+            {
+                throw new UserNotAuthorizedException(userId, batchLogEntryDto.BatchId);
             }
         }
 
@@ -61,45 +111,6 @@ namespace Services
                 _repositoryManager.BatchLogEntryRepository.Delete(batchLogEntry);
                 await _repositoryManager.UnitOfWork.SaveChangesAsync();
                 return batchLogEntryDto;
-            }
-            else
-            {
-                throw new UserNotAuthorizedException(userId, batchLogEntryDto.BatchId);
-            }
-        }
-
-        public async Task<IEnumerable<BatchLogEntryDto>> GetBatchLogEntries(string userId, Guid batchId, CancellationToken cancellationToken = default)
-        {
-            var UserOwnsBatch = await _repositoryManager.BatchRepository
-                .UserOwnsBatch(userId, batchId, cancellationToken);
-            var UserContributesBatch = await _repositoryManager.BatchRepository
-                .UserContributesBatch(userId, batchId, cancellationToken);
-            if (UserOwnsBatch || UserContributesBatch)
-            {
-                var BatchLogEntries = _repositoryManager.BatchLogEntryRepository.GetBatchLogEntries(userId, batchId, cancellationToken);
-                return BatchLogEntries.Adapt<IEnumerable<BatchLogEntryDto>>();
-            }
-            else
-            {
-                throw new UserNotAuthorizedException(userId, batchId);
-            }
-        }
-
-        public async Task<BatchLogEntryDto> Update(string userId, BatchLogEntryDto batchLogEntryDto, CancellationToken cancellationToken = default)
-        {
-            var UserOwnsBatch = await _repositoryManager.BatchRepository
-                .UserOwnsBatch(batchLogEntryDto.UserId, batchLogEntryDto.BatchId, cancellationToken);
-            var dbBatchLogEntry = _repositoryManager.BatchLogEntryRepository
-                .FindByCondition(x => x.Id == batchLogEntryDto.Id).SingleOrDefaultAsync().Result
-                ?? throw new BatchLogEntryNotFoundException(batchLogEntryDto.BatchId);
-
-            if (UserOwnsBatch || dbBatchLogEntry.UserId == userId)
-            {
-                batchLogEntryDto.UpdateDate = DateTime.UtcNow;
-                BatchLogEntry batchLogEntry = batchLogEntryDto.Adapt<BatchLogEntry>();
-                _repositoryManager.BatchLogEntryRepository.Update(batchLogEntry);
-                await _repositoryManager.UnitOfWork.SaveChangesAsync();
-                return batchLogEntry.Adapt<BatchLogEntryDto>();
             }
             else
             {

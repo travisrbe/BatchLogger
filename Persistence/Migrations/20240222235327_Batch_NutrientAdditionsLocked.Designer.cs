@@ -12,8 +12,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240220210637_essential_date_fields_updated")]
-    partial class essential_date_fields_updated
+    [Migration("20240222235327_Batch_NutrientAdditionsLocked")]
+    partial class Batch_NutrientAdditionsLocked
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,24 +34,25 @@ namespace Persistence.Migrations
                     b.Property<double?>("Brix")
                         .HasColumnType("float");
 
-                    b.Property<bool>("Complete")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
                     b.Property<DateTime?>("CreateDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Ingredients")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsComplete")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
+
+                    b.Property<bool>("NutrientAdditionsLocked")
+                        .HasColumnType("bit");
 
                     b.Property<int>("OffsetYanPpm")
                         .ValueGeneratedOnAdd()
@@ -90,9 +91,7 @@ namespace Persistence.Migrations
                         .HasColumnType("float");
 
                     b.Property<DateTime?>("UpdateDate")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<double>("VolumeLiters")
                         .ValueGeneratedOnAdd()
@@ -108,7 +107,12 @@ namespace Persistence.Migrations
 
                     b.HasIndex("YeastId");
 
-                    b.ToTable("Batch", (string)null);
+                    b.ToTable("Batch", null, t =>
+                        {
+                            t.HasTrigger("Batch_INSERT");
+                        });
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("Domain.Entities.BatchLogEntry", b =>
@@ -121,9 +125,7 @@ namespace Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("CreateDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -137,9 +139,7 @@ namespace Persistence.Migrations
                         .HasColumnType("float");
 
                     b.Property<DateTime?>("UpdateDate")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -154,7 +154,12 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("BatchLogEntry", (string)null);
+                    b.ToTable("BatchLogEntry", null, t =>
+                        {
+                            t.HasTrigger("BatchLogEntry_INSERT");
+                        });
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
             modelBuilder.Entity("Domain.Entities.Nutrient", b =>

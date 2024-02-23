@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class essential_date_fields : Migration
+    public partial class EssentialDateFields : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,28 +16,28 @@ namespace Persistence.Migrations
                 table: "BatchLogEntry",
                 type: "datetime2",
                 nullable: false,
-                defaultValueSql: "GETDATE()");
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "UpdateDate",
                 table: "BatchLogEntry",
                 type: "datetime2",
                 nullable: false,
-                defaultValueSql: "GETDATE()");
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "CreateDate",
                 table: "Batch",
                 type: "datetime2",
                 nullable: false,
-                defaultValueSql: "GETDATE()");
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "UpdateDate",
                 table: "Batch",
                 type: "datetime2",
                 nullable: false,
-                defaultValueSql: "GETDATE()");
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
         }
 
         /// <inheritdoc />

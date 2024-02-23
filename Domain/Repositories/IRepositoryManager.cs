@@ -8,6 +8,7 @@
         IUserBatchRepository UserBatchRepository { get; }
         IBatchLogEntryRepository BatchLogEntryRepository { get; }
         INutrientAdditionRepository NutrientAdditionRepository { get; }
+        IUserRepository UserRepository { get; }
         IUnitOfWork UnitOfWork {get;}
     }
 }

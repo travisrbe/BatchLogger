@@ -12,5 +12,11 @@ namespace Persistence.Repositories
             return await FindByCondition(x => x.BatchId == batchId && x.IsDeleted == false)
                 .ToListAsync(cancellationToken);
         }
+        new public void Update(BatchLogEntry batchLogEntry)
+        {
+            _context.Update(batchLogEntry);
+            _context.Entry(batchLogEntry).Property(x => x.UpdateDate).IsModified = false;
+            _context.Entry(batchLogEntry).Property(x => x.CreateDate).IsModified = false;
+        }
     }
 }

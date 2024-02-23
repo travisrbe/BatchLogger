@@ -10,6 +10,7 @@ namespace Persistence.Repositories
         private readonly Lazy<IUserBatchRepository> _lazyUserBatchRepository;
         private readonly Lazy<IBatchLogEntryRepository> _lazyBatchLogEntryRepository;
         private readonly Lazy<INutrientAdditionRepository> _lazyNutrientAdditionRepository;
+        private readonly Lazy<IUserRepository> _lazyUserRepository;
         private readonly Lazy<IUnitOfWork> _lazyUnitOfWork;
 
         public RepositoryManager(DataContext context)
@@ -20,6 +21,7 @@ namespace Persistence.Repositories
             _lazyUserBatchRepository = new Lazy<IUserBatchRepository>(() => new UserBatchRepository(context));
             _lazyBatchLogEntryRepository = new Lazy<IBatchLogEntryRepository>(() => new BatchLogEntryRepository(context));
             _lazyNutrientAdditionRepository = new Lazy<INutrientAdditionRepository>(() => new NutrientAdditionRepository(context));
+            _lazyUserRepository = new Lazy<IUserRepository>(() => new UserRepository(context));
             _lazyUnitOfWork = new Lazy<IUnitOfWork>(() => new UnitOfWork(context));
         }
 
@@ -29,6 +31,7 @@ namespace Persistence.Repositories
         public IUserBatchRepository UserBatchRepository => _lazyUserBatchRepository.Value;
         public IBatchLogEntryRepository BatchLogEntryRepository => _lazyBatchLogEntryRepository.Value;
         public INutrientAdditionRepository NutrientAdditionRepository => _lazyNutrientAdditionRepository.Value;
+        public IUserRepository UserRepository => _lazyUserRepository.Value;
         public IUnitOfWork UnitOfWork => _lazyUnitOfWork.Value;
     }
 }

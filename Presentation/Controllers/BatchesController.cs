@@ -65,6 +65,14 @@ namespace Presentation.Controllers
         }
 
         [HttpPost]
+        [Route("AddCollaborator/{token:guid}")]
+        public async Task<IActionResult> AddCollaborator([FromBody] BatchDto batchDto, Guid token, CancellationToken cancellationToken)
+        {
+            var userBatchDto = await _serviceManager.UserBatchService.Create(_userId, batchDto.Id, token, cancellationToken);
+            return Ok(userBatchDto);
+        }
+
+        [HttpPost]
         [Route("Create")]
         public async Task<IActionResult> Create([FromBody] BatchDto batchDto, CancellationToken cancellationToken)
         {
@@ -80,7 +88,7 @@ namespace Presentation.Controllers
                 BatchId = batchDto.Id,
                 UserId = _userId
             };
-            var UserBatchDto = await _serviceManager.UserBatchService.Create(_userId, SavedBatchDto.Id, cancellationToken);
+            var UserBatchDto = await _serviceManager.UserBatchService.Create(_userId, SavedBatchDto.Id, Guid.Empty, cancellationToken);
 
             return Ok(SavedBatchDto);
         }

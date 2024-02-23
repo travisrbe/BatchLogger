@@ -8,7 +8,7 @@ namespace Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<BatchLogEntry> builder)
         {
-            builder.ToTable(nameof(BatchLogEntry));
+            builder.ToTable(nameof(BatchLogEntry), le => le.HasTrigger("BatchLogEntry_INSERT"));
             builder.HasKey(log => log.Id);
             builder.Property(log => log.Id)
                 .ValueGeneratedOnAdd();

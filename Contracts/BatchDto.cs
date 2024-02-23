@@ -21,7 +21,8 @@ namespace Contracts
         public double? RemainderPpmNeeded { get; set; }
         public int? RemainderNutrientId { get; set; }
         public double? RemainderNutrientGrams { get; set; }
-        public bool Complete { get; set; } = false;
+        public bool IsComplete { get; set; } = false;
+        public bool NutrientAdditionsLocked { get; set; }
         public DateTime? CreateDate { get; set; }
         public DateTime? UpdateDate { get; set; }
 
