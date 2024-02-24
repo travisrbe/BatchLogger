@@ -6,7 +6,7 @@ using Service.Abstractions;
 
 namespace Services
 {
-    internal sealed class YeastService : IYeastService
+    public sealed class YeastService : IYeastService
     {
         private readonly IRepositoryManager _repositoryManager;
         public YeastService(IRepositoryManager repositoryManager) 

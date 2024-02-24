@@ -1,0 +1,58 @@
+A43700B0-D93C-40E1-8C2A-2C1060CF99CB
+
+//Login
+{
+  "email": "balathustrius@gmail.com",
+  "password": "Test123!@#",
+  "twoFactorCode": "string",
+  "twoFactorRecoveryCode": "string"
+}
+
+//Batch
+{
+  "specificGravity": 1.123,
+  "offsetYanPpm": 20,
+  "volumeLiters": 19,
+  "ingredients": "",
+  "process": "",
+  "complete": true,
+  "ownerUserId": "39baed82-a3d9-4d6c-9918-06b6e98d9a0a",
+  "yeastId": "f8b32f34-9e30-447b-9f64-50423a7b0487"
+}
+
+//Batch DELETE
+{
+  "id": "1991894b-3595-4140-532f-08dc324af01d",
+  "ownerUserId": "39baed82-a3d9-4d6c-9918-06b6e98d9a0a",
+  "yeastId": "f8b32f34-9e30-447b-9f64-50423a7b0487"
+}
+
+//BatchLogEntries CREATE
+{
+  "id": "48fe6059-2250-4366-b838-baf420c16278",
+  "logText": "This is a log entry.",
+  "batchId": "6d9ca3df-9e67-447a-231b-08dc2eb06dfc",
+  "userId": "39baed82-a3d9-4d6c-9918-06b6e98d9a0a"
+}
+
+//BatchLogEntry UPDATE
+{
+  "id": "dbc33c4e-13de-4e15-8bfb-0fc602a4ac2d",
+  "logText": "This is a log entry.",
+  "specificGravityReading": 1.100,
+  "pHReading": 3.1,
+  "batchId": "6d9ca3df-9e67-447a-231b-08dc2eb06dfc",
+  "userId": "39baed82-a3d9-4d6c-9918-06b6e98d9a0a"
+}
+{
+  "id": "dbc33c4e-13de-4e15-8bfb-0fc602a4ac2d",
+  "batchId": "6d9ca3df-9e67-447a-231b-08dc2eb06dfc",
+  "userId": "39baed82-a3d9-4d6c-9918-06b6e98d9a0a"
+}
+
+//NutrientAdditions
+{
+  "id": "1a41c6f2-2672-4c38-bbaf-cbb1e2e0a05e",
+  "batchId": "6d9ca3df-9e67-447a-231b-08dc2eb06dfc",
+  "nutrientId": "ac91578b-9b6c-4fe7-9d3a-b5b504b7ec6b"
+}
