@@ -18,10 +18,10 @@ namespace ApiServer.Extensions
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
-                    builder => builder.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader());
-
+                    builder => builder
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
             });
         }
 
@@ -42,7 +42,7 @@ namespace ApiServer.Extensions
 
         public static void ConfigureIdentity(this IServiceCollection services, IConfiguration config)
         {
-            var builder = services.AddIdentity<User, IdentityRole>(o =>
+            var builder = services.AddIdentityCore<User>(o =>
             {
                 o.Password.RequireDigit = true;
                 o.Password.RequireLowercase = false;
@@ -51,9 +51,9 @@ namespace ApiServer.Extensions
                 o.Password.RequiredLength = 10;
                 o.User.RequireUniqueEmail = true;
             })
-            .AddApiEndpoints()
             .AddEntityFrameworkStores<DataContext>()
-            .AddDefaultTokenProviders();   
+            .AddApiEndpoints()
+            .AddDefaultTokenProviders();
         }
 
         public static void ConfigureServices(this IServiceCollection services, IConfiguration config)

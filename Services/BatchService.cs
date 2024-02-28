@@ -47,9 +47,11 @@ namespace Services
             var batchDto = batch.Adapt<BatchDto>();
             return batchDto;
         }
-        public async Task<IEnumerable<BatchDto?>> GetByUserIdAsync(string id, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<BatchDto?>> GetByUserIdAsync(string id, 
+            bool isComplete = false, 
+            CancellationToken cancellationToken = default)
         {
-            var batches = await _repositoryManager.BatchRepository.GetUserBatchesAsync(id, cancellationToken);
+            var batches = await _repositoryManager.BatchRepository.GetUserBatchesAsync(id, isComplete, cancellationToken);
             var batchesDto = batches.Adapt<IEnumerable<BatchDto>>();
             return batchesDto.OrderByDescending(b => b.CreateDate);
         }

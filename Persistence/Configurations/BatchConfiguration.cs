@@ -12,6 +12,8 @@ namespace Persistence.Configurations
             builder.HasKey(batch => batch.Id);
             builder.Property(batch => batch.Id)
                 .ValueGeneratedOnAdd();
+            builder.Property(batch => batch.Name)
+                .IsRequired();
             builder.Property(batch => batch.SpecificGravity)
                 .HasDefaultValue(1.0)
                 .IsRequired();

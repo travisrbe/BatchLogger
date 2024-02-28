@@ -9,6 +9,7 @@ namespace Contracts
     public class BatchDto
     {
         public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
         public double SpecificGravity { get; set; }
         public int OffsetYanPpm { get; set; }
         public double VolumeLiters { get; set; }

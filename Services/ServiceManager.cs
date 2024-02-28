@@ -16,7 +16,7 @@ namespace Services
 
         public ServiceManager(IRepositoryManager repositoryManager, IHttpContextAccessor httpContextAccessor)
         {
-            _lazyUserService = new Lazy<IUserService>(() => new UserService(httpContextAccessor));
+            _lazyUserService = new Lazy<IUserService>(() => new UserService(repositoryManager, httpContextAccessor));
             _lazyYeastService = new Lazy<IYeastService>(() => new YeastService(repositoryManager));
             _lazyBatchService = new Lazy<IBatchService>(() => new BatchService(repositoryManager));
             _lazyUserBatchService = new Lazy<IUserBatchService>(() => new UserBatchService(repositoryManager));

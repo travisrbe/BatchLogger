@@ -17,5 +17,10 @@ namespace Persistence.Repositories
             return await FindByCondition(x => x.CollaboratorToken == collaboratorToken)
                 .SingleOrDefaultAsync(cancellationToken);
         }
+        public async Task<User?> GetByIdAsync(string id, CancellationToken cancellationToken)
+        {
+            return await FindByCondition(u => u.Id == id && u.IsDeleted == false)
+                .SingleOrDefaultAsync(cancellationToken);
+        }
     }
 }

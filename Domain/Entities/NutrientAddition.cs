@@ -23,5 +23,8 @@ namespace Domain.Entities
 
         public Guid NutrientId { get; set; }
         public virtual Nutrient Nutrient { get; set; } = null!;
+
+        [Range(1, 10)]
+        public int Priority { get; set; }
     }
 }

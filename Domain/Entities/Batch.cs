@@ -31,6 +31,8 @@ namespace Domain.Entities
         public Guid Id { get; set; }
 
         //required inputs
+        [MaxLength(128)]
+        public string Name { get; set; }
         public double SpecificGravity { get; set; }
         public int OffsetYanPpm { get; set; }
         public double VolumeLiters { get; set; }

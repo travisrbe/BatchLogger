@@ -10,5 +10,6 @@ namespace Domain.Repositories
     public interface IUserRepository : IRepositoryBase<User>
     {
         Task<User?> GetUserIdFromCollaboratorToken(Guid collaboratorToken, CancellationToken cancellationToken);
+        Task<User?> GetByIdAsync(string id, CancellationToken cancellationToken);
     }
 }
