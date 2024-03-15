@@ -52,10 +52,12 @@ namespace Services
                 .UserContributesBatch(userId, batchId, cancellationToken);
             if (UserOwnsBatch || UserContributesBatch)
             {
-                var BatchLogEntries = _repositoryManager.BatchLogEntryRepository
-                    .GetBatchLogEntries(userId, batchId, cancellationToken);
-                return BatchLogEntries.Adapt<IEnumerable<BatchLogEntryDto>>()
-                    .OrderByDescending(x => x.UpdateDate);
+                
+                var batchLogEntries = await _repositoryManager.BatchLogEntryRepository
+                    .FindByConditionAsync(e => e.BatchId == batchId && e.IsDeleted == false);
+
+                var batchLogEntryDtos = batchLogEntries.Adapt<IEnumerable<BatchLogEntryDto>>();
+                return batchLogEntryDtos.OrderByDescending(x => x.UpdateDate);
             }
             else
             {

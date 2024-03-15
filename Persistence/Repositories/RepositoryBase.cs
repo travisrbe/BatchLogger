@@ -13,14 +13,6 @@ namespace Persistence.Repositories
             _context = context;
         }
 
-        public IQueryable<T> FindAll()
-        {
-            return _context.Set<T>().AsNoTracking();
-        }
-        public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression)
-        {
-            return _context.Set<T>().Where(expression).AsNoTracking();
-        }
         public async Task<IEnumerable<T>> FindByConditionAsync(Expression<Func<T, bool>> expression)
         {
             return await _context.Set<T>().Where(expression).AsNoTracking().ToListAsync();
@@ -28,6 +20,19 @@ namespace Persistence.Repositories
         public async Task<T?> FindSingleOrDefaultAsync(Expression<Func<T, bool>> expression)
         {
             return await _context.Set<T>().Where(expression).AsNoTracking().SingleOrDefaultAsync();
+        }
+        public async Task<IEnumerable<T>> FindAllAsync()
+        {
+            return await _context.Set<T>().AsNoTracking().ToListAsync();
+        }
+
+        public IQueryable<T> FindAll()
+        {
+            return _context.Set<T>().AsNoTracking();
+        }
+        public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression)
+        {
+            return _context.Set<T>().Where(expression).AsNoTracking();
         }
         public void Create(T entity)
         {

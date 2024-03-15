@@ -4,12 +4,14 @@ using Domain.Exceptions;
 using Domain.Repositories;
 using Mapster;
 using Service.Abstractions;
+using Services.ServiceHelpers;
 
 namespace Services
 {
     internal class BatchService : IBatchService
     {
         private readonly IRepositoryManager _repositoryManager;
+        private CalculatorHelper calcHelper = new CalculatorHelper();
         public BatchService(IRepositoryManager repositoryManager)
         {
             _repositoryManager = repositoryManager;
@@ -18,6 +20,8 @@ namespace Services
         {
             Batch batch = batchDto.Adapt<Batch>();
             _repositoryManager.BatchRepository.Create(batch);
+            //hydrates Brix, Sugar PPM, and Total Target Yan
+            calcHelper.CalculateTargetYan(ref batch);
             await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
 
             //Return the batch from database to reflect accurate datetimes
@@ -72,6 +76,10 @@ namespace Services
                 throw new UserDoesNotOwnBatchException(userId, dbBatch.Id);
             }
             Batch batch = batchDto.Adapt<Batch>();
+            Yeast yeast = await _repositoryManager.YeastRepository.GetByIdAsync(batch.YeastId, cancellationToken)
+                ?? throw new YeastNotFoundException(batch.YeastId);
+            batch.Yeast = yeast;
+            calcHelper.CalculateTargetYan(ref batch);
             _repositoryManager.BatchRepository.Update(batch);
             await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
 

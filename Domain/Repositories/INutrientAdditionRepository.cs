@@ -9,6 +9,5 @@ namespace Domain.Repositories
 {
     public interface INutrientAdditionRepository : IRepositoryBase<NutrientAddition>
     {
-        Task<IEnumerable<NutrientAddition?>> GetByBatchIdAsync(Guid batchId, CancellationToken cancellationToken);
     }
 }

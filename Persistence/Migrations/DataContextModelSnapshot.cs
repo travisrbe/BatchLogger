@@ -34,6 +34,9 @@ namespace Persistence.Migrations
                     b.Property<DateTime?>("CreateDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("GoFermUsed")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Ingredients")
                         .HasMaxLength(2048)
                         .HasColumnType("nvarchar(2048)");
@@ -48,7 +51,7 @@ namespace Persistence.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
-                    b.Property<bool>("IsNutrientLocked")
+                    b.Property<bool>("IsLocked")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
@@ -78,22 +81,22 @@ namespace Persistence.Migrations
                     b.Property<int?>("RemainderNutrientId")
                         .HasColumnType("int");
 
-                    b.Property<double?>("RemainderPpmNeeded")
-                        .HasColumnType("float");
+                    b.Property<int?>("RemainderPpmNeeded")
+                        .HasColumnType("int");
 
                     b.Property<double>("SpecificGravity")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("float")
                         .HasDefaultValue(1.0);
 
-                    b.Property<double?>("SubtotalYanPpm")
-                        .HasColumnType("float");
+                    b.Property<int?>("SubtotalYanPpm")
+                        .HasColumnType("int");
 
                     b.Property<double?>("SugarPpm")
                         .HasColumnType("float");
 
-                    b.Property<double?>("TotalTargetYanPpm")
-                        .HasColumnType("float");
+                    b.Property<int?>("TotalTargetYanPpm")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdateDate")
                         .HasColumnType("datetime2");
@@ -131,6 +134,9 @@ namespace Persistence.Migrations
 
                     b.Property<DateTime?>("CreateDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDataEntry")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -196,7 +202,8 @@ namespace Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<int>("YanPpmPerGram")
+                    b.Property<int?>("YanPpmPerGram")
+                        .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(0);
@@ -216,6 +223,11 @@ namespace Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<double?>("EffectivenessMutiplierOverride")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(1.0);
+
+                    b.Property<double?>("GramsToAdd")
                         .HasColumnType("float");
 
                     b.Property<bool>("IsDeleted")
@@ -226,10 +238,17 @@ namespace Persistence.Migrations
                     b.Property<double?>("MaxGramsPerLiterOverride")
                         .HasColumnType("float");
 
+                    b.Property<string>("NameOverride")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("NutrientId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Priority")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("YanPpmAdded")
                         .HasColumnType("int");
 
                     b.Property<double?>("YanPpmPerGramOverride")
@@ -242,6 +261,48 @@ namespace Persistence.Migrations
                     b.HasIndex("NutrientId");
 
                     b.ToTable("NutrientAddition", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.StackPreset", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StackPreset");
+                });
+
+            modelBuilder.Entity("Domain.Entities.StackPresetLookup", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("NutrientId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("StackPresetId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NutrientId");
+
+                    b.HasIndex("StackPresetId");
+
+                    b.ToTable("StackPresetLookup");
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
@@ -392,6 +453,10 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("MultiplierName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -598,6 +663,25 @@ namespace Persistence.Migrations
                     b.Navigation("Nutrient");
                 });
 
+            modelBuilder.Entity("Domain.Entities.StackPresetLookup", b =>
+                {
+                    b.HasOne("Domain.Entities.Nutrient", "Nutrient")
+                        .WithMany("StackPresetLookups")
+                        .HasForeignKey("NutrientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.StackPreset", "StackPreset")
+                        .WithMany("StackPresetLookups")
+                        .HasForeignKey("StackPresetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Nutrient");
+
+                    b.Navigation("StackPreset");
+                });
+
             modelBuilder.Entity("Domain.Entities.UserBatch", b =>
                 {
                     b.HasOne("Domain.Entities.Batch", "Batch")
@@ -680,6 +764,13 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.Nutrient", b =>
                 {
                     b.Navigation("NutrientAdditions");
+
+                    b.Navigation("StackPresetLookups");
+                });
+
+            modelBuilder.Entity("Domain.Entities.StackPreset", b =>
+                {
+                    b.Navigation("StackPresetLookups");
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>

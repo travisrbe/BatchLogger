@@ -12,7 +12,7 @@ namespace Contracts
         public string Name { get; set; } = string.Empty;
         public string Manufacturer { get; set; } = string.Empty;
         public double? MaxGramsPerLiter { get; set; }
-        public int YanPpmPerGram { get; set; }
+        public int? YanPpmPerGram { get; set; }
         public double EffectivenessMutiplier { get; set; }
     }
 }

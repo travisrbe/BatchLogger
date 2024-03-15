@@ -11,10 +11,24 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.ConfigureCors();
 builder.Services.ConfigureIISIntegration();
 
-builder.Services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme);
+builder.Services.ConfigureIdentity(builder.Configuration);
+
+builder.Services.AddAuthentication();
+builder.Services.ConfigureApplicationCookie(o =>
+{
+    o.Events.OnRedirectToAccessDenied = context =>
+    {
+        context.Response.StatusCode = (int)403;
+        return Task.CompletedTask;
+    };
+    o.Events.OnRedirectToLogin = context =>
+    {
+        context.Response.StatusCode = (int)401;
+        return Task.CompletedTask;
+    };
+});
 builder.Services.AddAuthorizationBuilder();
 
-builder.Services.ConfigureIdentity(builder.Configuration);
 builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.ConfigureServices(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
@@ -25,35 +39,7 @@ builder.Services.AddHttpContextAccessor();
 
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(
-    o =>
-    {
-        o.AddSecurityDefinition(name:"Bearer", new OpenApiSecurityScheme
-        {
-            In = ParameterLocation.Header,
-            Name = "Authorization",
-            Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
-            Type = SecuritySchemeType.ApiKey,
-            Scheme = "Bearer"
-        });
-        o.AddSecurityRequirement(new OpenApiSecurityRequirement
-        {
-            {
-            new OpenApiSecurityScheme
-            {
-                Name = "Bearer",
-                In = ParameterLocation.Header,
-                Reference = new OpenApiReference
-                {
-                    Id = "Bearer",
-                    Type = ReferenceType.SecurityScheme
-                }
-            },
-            new List<string>()
-        }
-        });
-        //o.OperationFilter<SecurityRequirementsOperationFilter>();
-    });
+builder.Services.AddSwaggerGen();
 
 
 var app = builder.Build();
@@ -71,9 +57,9 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGroup("/account").MapIdentityApi<User>();
+app.MapGroup("api/account").MapIdentityApi<User>();
 
-app.MapPost("/account/logout", async (SignInManager<User> signInManager) =>
+app.MapPost("api/account/logout", async (SignInManager<User> signInManager) =>
 {
     await signInManager.SignOutAsync();
     return Results.Ok();

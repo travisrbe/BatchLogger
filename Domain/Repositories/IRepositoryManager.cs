@@ -9,6 +9,8 @@
         IBatchLogEntryRepository BatchLogEntryRepository { get; }
         INutrientAdditionRepository NutrientAdditionRepository { get; }
         IUserRepository UserRepository { get; }
+        IStackPresetRepository StackPresetRepository { get; }
+        IStackPresetLookupRepository StackPresetLookupRepository { get; }
         IUnitOfWork UnitOfWork {get;}
     }
 }

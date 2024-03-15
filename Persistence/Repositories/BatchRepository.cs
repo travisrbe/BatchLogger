@@ -45,6 +45,7 @@ namespace Persistence.Repositories
         public async Task<Batch?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             return await FindByCondition(x => x.Id == id && x.IsDeleted == false)
+                .Include(b => b.Yeast)
                 .Include(b => b.UserBatches
                     .Where(ub => ub.IsDeleted == false))
                 .Include(b => b.LogEntries

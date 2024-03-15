@@ -24,7 +24,7 @@ namespace Tests
         {
             //Arrange
             var yeastId = Guid.NewGuid();
-            var mockYeast = new Yeast("Test", "Test", "Test")
+            var mockYeast = new Yeast("Test", "Test", "Test", "Test")
             {
                 Id = yeastId,
                 NutrientReqMult = 0.5,

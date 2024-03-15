@@ -13,6 +13,7 @@ namespace Services
         private readonly Lazy<IBatchLogEntryService> _lazyBatchLogEntryService;
         private readonly Lazy<INutrientAdditionService> _lazyNutrientAdditionService;
         private readonly Lazy<INutrientService> _lazyNutrientService;
+        private readonly Lazy<IStackPresetService> _lazyStackPresetService;
 
         public ServiceManager(IRepositoryManager repositoryManager, IHttpContextAccessor httpContextAccessor)
         {
@@ -23,6 +24,7 @@ namespace Services
             _lazyBatchLogEntryService = new Lazy<IBatchLogEntryService>(() => new BatchLogEntryService(repositoryManager));
             _lazyNutrientAdditionService = new Lazy<INutrientAdditionService> (() =>  new NutrientAdditionService(repositoryManager));
             _lazyNutrientService = new Lazy<INutrientService>(() => new NutrientService(repositoryManager));
+            _lazyStackPresetService = new Lazy<IStackPresetService> (() => new StackPresetService(repositoryManager));
         }
 
         public IUserService UserService => _lazyUserService.Value;
@@ -32,5 +34,6 @@ namespace Services
         public IUserBatchService UserBatchService => _lazyUserBatchService.Value;
         public IBatchLogEntryService BatchLogEntryService => _lazyBatchLogEntryService.Value;
         public INutrientAdditionService NutrientAdditionService => _lazyNutrientAdditionService.Value;
+        public IStackPresetService StackPresetService => _lazyStackPresetService.Value;
     }
 }

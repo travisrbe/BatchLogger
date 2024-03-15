@@ -13,5 +13,6 @@ namespace Contracts
         public string Brand { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public double NutrientReqMult { get; set; }
+        public string MultiplierName { get; set; } = string.Empty;
     }
 }

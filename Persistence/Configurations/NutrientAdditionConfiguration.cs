@@ -15,13 +15,9 @@ namespace Persistence.Configurations
 
             builder.ToTable(nameof(NutrientAddition));
             builder.HasKey(x => x.Id);
-            
-            builder.Property(na => na.MaxGramsPerLiterOverride)
-                .HasDefaultValue(null);
-            builder.Property(na => na.YanPpmPerGramOverride)
-                .HasDefaultValue(null);
+
             builder.Property(na => na.EffectivenessMutiplierOverride)
-                .HasDefaultValue(null);
+                .HasDefaultValue((double)1);
             builder.Property(na => na.IsDeleted)
                 .HasDefaultValue(false);
             builder.Property(na => na.Priority);

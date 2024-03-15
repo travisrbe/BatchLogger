@@ -15,10 +15,11 @@ namespace Domain.Entities
         [MaxLength(256)]
         public string Manufacturer { get; set; }
         public double? MaxGramsPerLiter { get; set; }
-        public int YanPpmPerGram { get; set; }
+        public int? YanPpmPerGram { get; set; }
         public double EffectivenessMutiplier { get; set; }
         public bool IsDeleted { get; set; }
 
         public virtual ICollection<NutrientAddition> NutrientAdditions { get; set; } = [];
+        public virtual ICollection<StackPresetLookup> StackPresetLookups { get; set; } = [];
     }
 }

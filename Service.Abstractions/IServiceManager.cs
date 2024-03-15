@@ -9,5 +9,6 @@
         IUserBatchService UserBatchService { get; }
         IBatchLogEntryService BatchLogEntryService { get; }
         INutrientAdditionService NutrientAdditionService { get; }
+        IStackPresetService StackPresetService { get; }
     }
 }

@@ -15,15 +15,16 @@ namespace Contracts
         public double VolumeLiters { get; set; }
         public string Ingredients { get; set; } = string.Empty;
         public string Process { get; set; } = string.Empty;
+        public bool GoFermUsed { get; set; } = true;
         public double? Brix { get; set; }
         public double? SugarPpm { get; set; }
-        public double? SubtotalYanPpm { get; set; }
-        public double? TotalTargetYanPpm { get; set; }
-        public double? RemainderPpmNeeded { get; set; }
+        public int? SubtotalYanPpm { get; set; }
+        public int? TotalTargetYanPpm { get; set; }
+        public int? RemainderPpmNeeded { get; set; }
         public int? RemainderNutrientId { get; set; }
         public double? RemainderNutrientGrams { get; set; }
         public bool IsComplete { get; set; } = false;
-        public bool NutrientAdditionsLocked { get; set; }
+        public bool IsLocked { get; set; }
         public DateTime? CreateDate { get; set; }
         public DateTime? UpdateDate { get; set; }
 

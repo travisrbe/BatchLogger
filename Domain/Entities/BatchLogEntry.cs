@@ -21,6 +21,7 @@ namespace Domain.Entities
         public string? LogText { get; set; }
         public double? SpecificGravityReading { get; set; }
         public double? pHReading { get; set; }
+        public bool IsDataEntry { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime? CreateDate { get; set; }
         public DateTime? UpdateDate { get; set; }

@@ -32,6 +32,15 @@ namespace Presentation.Controllers
             return Ok(BatchLogEntryDto);
         }
 
+        [HttpGet]
+        [Route("Batch/{batchId:guid}")]
+        public async Task<IActionResult> GetByBatchId(Guid batchId, CancellationToken cancellationToken)
+        {
+            var nutrientAdditionsDto = await _serviceManager.BatchLogEntryService
+                .GetBatchLogEntries(_userId, batchId, cancellationToken);
+            return Ok(nutrientAdditionsDto);
+        }
+
         [HttpPost]
         [Route("Update")]
         public async Task<IActionResult> Update([FromBody] BatchLogEntryDto batchLogEntryDto, CancellationToken cancellationToken)

@@ -27,7 +27,7 @@ namespace Persistence.Configurations
                 .HasDefaultValue(false);
             builder.Property(batch => batch.IsDeleted)
                 .HasDefaultValue(false);
-            builder.Property(batch => batch.IsNutrientLocked)
+            builder.Property(batch => batch.IsLocked)
                 .HasDefaultValue(false);
             builder.Property(batch => batch.YeastId)
                 .HasDefaultValue(null)

@@ -11,7 +11,7 @@ namespace Domain.Entities
 {
     public class Batch
     {
-        public Batch(double specificGravity, 
+        public Batch(double specificGravity,
             int offsetYanPpm, 
             double volumeLiters,
             string ownerUserId,
@@ -27,12 +27,26 @@ namespace Domain.Entities
             NutrientAdditions = [];
             UserBatches = [];
         }
+
+        public Batch()
+        {
+            SpecificGravity = 0;
+            OffsetYanPpm = 0;
+            VolumeLiters = 0;
+            OwnerUserId = string.Empty;
+            YeastId = new Guid();
+
+            LogEntries = [];
+            NutrientAdditions = [];
+            UserBatches = [];
+        }
+
         //database generated
         public Guid Id { get; set; }
 
         //required inputs
         [MaxLength(128)]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public double SpecificGravity { get; set; }
         public int OffsetYanPpm { get; set; }
         public double VolumeLiters { get; set; }
@@ -42,18 +56,19 @@ namespace Domain.Entities
         public string? Ingredients { get; set; }
         [MaxLength(2048)]
         public string? Process { get; set; }
+        public bool GoFermUsed { get; set; } = true;
 
         //calculated
         public double? Brix { get; set; }
         public double? SugarPpm { get; set; }
-        public double? SubtotalYanPpm {get; set;}
-        public double? TotalTargetYanPpm { get; set; }
-        public double? RemainderPpmNeeded { get; set; }
+        public int? SubtotalYanPpm {get; set;}
+        public int? TotalTargetYanPpm { get; set; }
+        public int? RemainderPpmNeeded { get; set; }
         public int? RemainderNutrientId { get; set; }
         public double? RemainderNutrientGrams { get; set; }
         public bool IsComplete { get; set; }
         public bool IsDeleted { get; set; }
-        public bool IsNutrientLocked { get; set; }
+        public bool IsLocked { get; set; }
         public DateTime? CreateDate { get; set; }
         public DateTime? UpdateDate { get; set; }
 

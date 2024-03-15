@@ -26,11 +26,11 @@ namespace Presentation.Controllers
 
         [HttpPost]
         [Route("Create")]
-        public async Task<IActionResult> Create([FromBody] NutrientAdditionDto nutrientAdditionDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> Create(Guid batchId, Guid nutrientId, int priority, CancellationToken cancellationToken)
         {
             var NutrientAdditionDto = await _serviceManager.NutrientAdditionService
-                .Create(_userId, nutrientAdditionDto, cancellationToken);
-            return Ok(nutrientAdditionDto);
+                .Create(_userId, batchId, nutrientId, priority, cancellationToken);
+            return Ok(NutrientAdditionDto);
         }
 
         [HttpGet]
@@ -52,12 +52,51 @@ namespace Presentation.Controllers
         }
 
         [HttpPost]
+        [Route("UpdateAll")]
+        public async Task<IActionResult> UpdateAll([FromBody] IEnumerable<NutrientAdditionDto> nutrientAdditionDtos, CancellationToken cancellationToken)
+        {
+            nutrientAdditionDtos = await _serviceManager.NutrientAdditionService
+                .UpdateRange(_userId, nutrientAdditionDtos, cancellationToken);
+            return Ok(nutrientAdditionDtos);
+        }
+
+        [HttpPost]
+        [Route("Reset")]
+        public async Task<IActionResult> Reset([FromBody] IEnumerable<NutrientAdditionDto> nutrientAdditionDtos, CancellationToken cancellationToken)
+        {
+            if (nutrientAdditionDtos.Count() > 0)
+            {
+                nutrientAdditionDtos = await _serviceManager.NutrientAdditionService
+                .Reset(_userId, nutrientAdditionDtos, cancellationToken);
+            }
+            return Ok(nutrientAdditionDtos);
+        }
+
+        [HttpPost]
+        [Route("StackPreset")]
+        public async Task<IActionResult> StackPreset(Guid batchId, Guid stackPresetId, CancellationToken cancellationToken)
+        {
+            IEnumerable<NutrientAdditionDto> nutrientAdditionDtos = await _serviceManager.NutrientAdditionService
+                .SetStackPreset(_userId, batchId, stackPresetId, cancellationToken);
+            return Ok(nutrientAdditionDtos);
+        }
+
+        [HttpPost]
+        [Route("RestoreDefaultValues")]
+        public async Task<IActionResult> RestoreDefaultValues([FromBody] NutrientAdditionDto nutrientAdditionDto, CancellationToken cancellationToken)
+        {
+            var result = await _serviceManager.NutrientAdditionService
+                .RestoreDefaultValues(_userId, nutrientAdditionDto, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpPost]
         [Route("Delete")]
         public async Task<IActionResult> Delete([FromBody] NutrientAdditionDto nutrientAdditionDto, CancellationToken cancellationToken)
         {
-            var NutrientAdditionDto = await _serviceManager.NutrientAdditionService
+            await _serviceManager.NutrientAdditionService
                 .Delete(_userId, nutrientAdditionDto, cancellationToken);
-            return Ok(nutrientAdditionDto);
+            return Ok();
         }
     }
 }
