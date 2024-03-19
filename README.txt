@@ -1,4 +1,4 @@
-This is an API created as an exercise to explore what is new or different in ASP.NET Core 8. It will provide the back-end for a (forthcoming, probably React) single-page application aimed at helping home winemakers plan and log batches of wine.
+This is an API created as an exercise to explore what is new or different in ASP.NET Core 8. It provides the backend for a React SPA frontend aimed at helping home winemakers plan and log batches of wine, and optionally share their records.
 
 This repository has been made public as a code sample, and is not the active repository for this project, so pardon the sparse commit history. This is a work in progress.
 
