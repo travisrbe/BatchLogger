@@ -16,6 +16,7 @@ namespace Contracts
         public string Ingredients { get; set; } = string.Empty;
         public string Process { get; set; } = string.Empty;
         public bool GoFermUsed { get; set; } = true;
+        public double? phReading { get; set; }
         public double? Brix { get; set; }
         public double? SugarPpm { get; set; }
         public int? SubtotalYanPpm { get; set; }

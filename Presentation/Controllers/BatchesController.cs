@@ -40,20 +40,10 @@ namespace Presentation.Controllers
         }
 
         [HttpGet]
-        [Route("MyActiveBatches")]
-        public async Task<IActionResult> GetUserActiveBatches(CancellationToken cancellationToken)
+        [Route("MyBatches")]
+        public async Task<IActionResult> GetUserBatches(CancellationToken cancellationToken)
         {
-            bool isComplete = false;
-            var BatchesDto = await _serviceManager.BatchService.GetByUserIdAsync(_userId, isComplete, cancellationToken);
-            return Ok(BatchesDto);
-        }
-
-        [HttpGet]
-        [Route("MyCompleteBatches")]
-        public async Task<IActionResult> GetUserCompleteBatches(CancellationToken cancellationToken)
-        {
-            bool isComplete = true;
-            var BatchesDto = await _serviceManager.BatchService.GetByUserIdAsync(_userId, isComplete, cancellationToken);
+            var BatchesDto = await _serviceManager.BatchService.GetByUserIdAsync(_userId, cancellationToken);
             return Ok(BatchesDto);
         }
 

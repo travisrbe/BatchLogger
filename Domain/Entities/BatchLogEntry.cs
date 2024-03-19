@@ -9,16 +9,10 @@ namespace Domain.Entities
 {
     public class BatchLogEntry
     {
-        public BatchLogEntry(Guid batchId, string userId)
-        {
-            BatchId = batchId;
-            UserId = userId;
-        }
-
         public Guid Id { get; set; }
 
         [MaxLength(2048)]
-        public string? LogText { get; set; }
+        public string LogText { get; set; } = string.Empty;
         public double? SpecificGravityReading { get; set; }
         public double? pHReading { get; set; }
         public bool IsDataEntry { get; set; }

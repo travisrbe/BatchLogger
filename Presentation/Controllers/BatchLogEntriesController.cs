@@ -25,10 +25,19 @@ namespace Presentation.Controllers
 
         [HttpPost]
         [Route("Create")]
-        public async Task<IActionResult> Create([FromBody] BatchLogEntryDto batchLogEntryDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> Create([FromBody] Guid batchId, CancellationToken cancellationToken)
         {
             var BatchLogEntryDto = await _serviceManager.BatchLogEntryService
-                .Create(_userId, batchLogEntryDto, cancellationToken);
+                .Create(_userId, batchId, cancellationToken);
+            return Ok(BatchLogEntryDto);
+        }
+
+        [HttpPost]
+        [Route("Import")]
+        public async Task<IActionResult> Import([FromBody] IEnumerable<NutrientAdditionDto> nuAdds, CancellationToken cancellationToken)
+        {
+            var BatchLogEntryDto = await _serviceManager.BatchLogEntryService
+                .Create(_userId, nuAdds, cancellationToken);
             return Ok(BatchLogEntryDto);
         }
 

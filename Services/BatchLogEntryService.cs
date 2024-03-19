@@ -5,6 +5,7 @@ using Domain.Repositories;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Service.Abstractions;
+using System.Text;
 
 namespace Services
 {
@@ -16,14 +17,18 @@ namespace Services
             _repositoryManager = repositoryManager;
         }
 
-        public async Task<BatchLogEntryDto> Create(string userId, BatchLogEntryDto batchLogEntryDto, CancellationToken cancellationToken = default)
+        public async Task<BatchLogEntryDto> Create(string userId, Guid batchId, CancellationToken cancellationToken = default)
         {
             var UserOwnsBatch = await _repositoryManager.BatchRepository
-                .UserOwnsBatch(userId, batchLogEntryDto.BatchId, cancellationToken);
+                .UserOwnsBatch(userId, batchId, cancellationToken);
             var UserContributesBatch = await _repositoryManager.BatchRepository
-                .UserContributesBatch(userId, batchLogEntryDto.BatchId, cancellationToken);
+                .UserContributesBatch(userId, batchId, cancellationToken);
 
-            batchLogEntryDto.UserId = userId; //tampering prevention
+            BatchLogEntryDto batchLogEntryDto = new BatchLogEntryDto()
+            {
+                BatchId = batchId,
+                UserId = userId,
+            };
 
             if (UserOwnsBatch || UserContributesBatch)
             {
@@ -44,6 +49,64 @@ namespace Services
                 throw new UserNotAuthorizedException(batchLogEntryDto.UserId, batchLogEntryDto.BatchId);
             }
         }
+
+        public async Task<BatchLogEntryDto> Create(string userId, IEnumerable<NutrientAdditionDto> nuAdds, CancellationToken cancellationToken = default)
+        {
+            if (nuAdds.Count() < 1)
+            {
+                throw new Exception("No nutrient additions to import.");
+            }
+            var list = nuAdds.ToList();
+            Guid batchId = list[0].BatchId;
+
+            Batch batch = await _repositoryManager.BatchRepository.GetByIdAsync(batchId, cancellationToken)
+                ?? throw new BatchNotFoundException(batchId);
+
+            var UserContributesBatch = await _repositoryManager.BatchRepository
+                .UserContributesBatch(userId, batchId, cancellationToken);
+
+            StringBuilder logString = new StringBuilder();
+            int totalPpmYan = 0;
+
+            foreach (var na in nuAdds)
+            {
+                logString.AppendLine($"{na.NameOverride}: {na.GramsToAdd}g provides {na.YanPpmAdded} PPM YAN");
+                totalPpmYan += na.YanPpmAdded ?? 0;
+            }
+            logString.AppendLine($"Total PPM YAN: {totalPpmYan}");
+            if (batch.TotalTargetYanPpm > totalPpmYan) logString
+                    .AppendLine($"Batch Target: {batch.TotalTargetYanPpm} - Shortfall of {batch.TotalTargetYanPpm - totalPpmYan}");
+
+            BatchLogEntryDto batchLogEntryDto = new BatchLogEntryDto()
+            {
+                BatchId = batchId,
+                SpecificGravityReading = null,
+                pHReading = null,
+                LogText = logString.ToString(),
+                IsDataEntry = false,
+                UserId = userId,
+            };
+
+            if ((batchId == batch.Id) || UserContributesBatch)
+            {
+                BatchLogEntry batchLogEntry = batchLogEntryDto.Adapt<BatchLogEntry>();
+                _repositoryManager.BatchLogEntryRepository.Create(batchLogEntry);
+                await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
+
+                //Return the Log Entry from database to reflect accurate datetimes
+                Guid savedBatchLogEntryId = batchLogEntry.Id;
+                batchLogEntry = await _repositoryManager.BatchLogEntryRepository
+                    .FindSingleOrDefaultAsync(x => x.Id == savedBatchLogEntryId)
+                    ?? throw new BatchLogEntryNotFoundException(savedBatchLogEntryId);
+
+                return batchLogEntry.Adapt<BatchLogEntryDto>();
+            }
+            else
+            {
+                throw new UserNotAuthorizedException(batchLogEntryDto.UserId, batchLogEntryDto.BatchId);
+            }
+        }
+
         public async Task<IEnumerable<BatchLogEntryDto>> GetBatchLogEntries(string userId, Guid batchId, CancellationToken cancellationToken = default)
         {
             var UserOwnsBatch = await _repositoryManager.BatchRepository
@@ -52,12 +115,12 @@ namespace Services
                 .UserContributesBatch(userId, batchId, cancellationToken);
             if (UserOwnsBatch || UserContributesBatch)
             {
-                
+
                 var batchLogEntries = await _repositoryManager.BatchLogEntryRepository
                     .FindByConditionAsync(e => e.BatchId == batchId && e.IsDeleted == false);
 
                 var batchLogEntryDtos = batchLogEntries.Adapt<IEnumerable<BatchLogEntryDto>>();
-                return batchLogEntryDtos.OrderByDescending(x => x.UpdateDate);
+                return batchLogEntryDtos.OrderByDescending(x => x.CreateDate);
             }
             else
             {
@@ -103,9 +166,10 @@ namespace Services
 
             if (UserOwnsBatch || dbBatchLogEntry.UserId == userId)
             {
-                BatchLogEntry batchLogEntry = dbBatchLogEntry.Adapt<BatchLogEntry>();
-                batchLogEntry.IsDeleted = true;
-                _repositoryManager.BatchLogEntryRepository.Delete(batchLogEntry);
+                dbBatchLogEntry.IsDeleted = true;
+#pragma warning disable CS0618 // Hard delete is OK here.
+                _repositoryManager.BatchLogEntryRepository.HardDelete(dbBatchLogEntry);
+#pragma warning restore CS0618 // Hard delete is OK here.
                 await _repositoryManager.UnitOfWork.SaveChangesAsync();
                 return batchLogEntryDto;
             }

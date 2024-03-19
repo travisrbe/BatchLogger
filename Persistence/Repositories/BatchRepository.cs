@@ -55,11 +55,12 @@ namespace Persistence.Repositories
                 .SingleOrDefaultAsync(cancellationToken)
                 ?? throw new BatchNotFoundException(id);
         }
-        public async Task<IEnumerable<Batch?>> GetUserBatchesAsync(string userId, bool isComplete, CancellationToken cancellationToken)
+
+        public async Task<IEnumerable<Batch?>> GetUserBatchesAsync(string userId, CancellationToken cancellationToken)
         {
             var result = await _context.Batches
                 .Where(b => b.UserBatches
-                    .Any(x => x.UserId == userId && x.IsDeleted == false && x.Batch.IsComplete == isComplete)
+                    .Any(x => x.UserId == userId && x.IsDeleted == false)
                 ).ToListAsync(cancellationToken);
             return result;
         }

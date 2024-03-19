@@ -57,6 +57,7 @@ namespace Domain.Entities
         [MaxLength(2048)]
         public string? Process { get; set; }
         public bool GoFermUsed { get; set; } = true;
+        public double? phReading { get; set; }
 
         //calculated
         public double? Brix { get; set; }
