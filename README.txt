@@ -13,7 +13,7 @@ To run this project:
 3. In appsettings.json, update the ConnectionStrings:Development value to point to your server, if necessary.
 4. The first time you build, it should attempt to restore NuGet packages. If it does not, right click on the Solution file and select "Restore Nuget Packages."
 5. Open the Package Manager Console, point the Default project to "Persistence" and run `Update-Database` to generate tables. There is currently no script to generate seed data.
-  5.1. If you have problems with this, you can delete all of the migrations, then run `Add-Migration InitialCreate`, then run `Update-Database`. This should work but I haven't tested it.
+  5.1. You cannot currently delete the migration scripts to start over with a new "add-migration initial" - some contraints were added to the Up scripts manually because EF does not handle them very well. These will not get created if the current migration files are deleted.
 6. Run the application. You will have to use Postman or Swagger to hit the account/register and account/login endpoints. Be sure you opt to use Browser Cookies - it's not currently configured to use Bearer Tokens. 
   6.1 All other controller actions require authorization.
 
