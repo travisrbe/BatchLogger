@@ -14,7 +14,7 @@ namespace Persistence.Repositories
                 .SingleOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<Yeast>> GetAllAsync(CancellationToken cancellationToken)
+        public async Task<List<Yeast>> GetAllAsync(CancellationToken cancellationToken)
         {
             return await FindByCondition(y => y.IsDeleted == false)
                 .OrderBy(y => y.Brand).ThenBy(y => y.Name)

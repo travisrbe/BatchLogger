@@ -20,9 +20,10 @@ namespace Services
         public async Task<BatchDto> Create(BatchDto batchDto, CancellationToken cancellationToken = default)
         {
             Batch batch = batchDto.Adapt<Batch>();
+            batch.YeastId = _repositoryManager.YeastRepository.GetAllAsync(cancellationToken).Result[0].Id;
             _repositoryManager.BatchRepository.Create(batch);
             //hydrates Brix, Sugar PPM, and Total Target Yan
-            calcHelper.CalculateTargetYan(ref batch);
+            //calcHelper.CalculateTargetYan(ref batch);
             await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
 
             //Return the batch from database to reflect accurate datetimes
@@ -39,6 +40,18 @@ namespace Services
             var batches = await _repositoryManager.BatchRepository.GetAllAsync(cancellationToken);
             var batchesDto = batches.Adapt<IEnumerable<BatchDto>>();
             return batchesDto.OrderByDescending(b => b.CreateDate);
+        }
+
+        public async Task<BatchDto> ShareByIdAsync(string userId, Guid id, CancellationToken cancellationToken = default)
+        {
+            Batch batch = await _repositoryManager.BatchRepository.GetByIdAsync(id, cancellationToken)
+                ?? throw new BatchNotFoundException(id);
+
+            if (!batch.IsPublic)
+            {
+                throw new BatchNotFoundException(id);
+            }
+            else return batch.Adapt<BatchDto>();
         }
 
         public async Task<BatchDto> GetByIdAsync(string userId, Guid id, CancellationToken cancellationToken = default)
@@ -109,21 +122,24 @@ namespace Services
             foreach (var na in DbBatch.NutrientAdditions)
             {
                 na.IsDeleted = true;
-                _repositoryManager.NutrientAdditionRepository.Delete(na);
+#pragma warning disable CS0618 // Hard Delete Approved
+                _repositoryManager.NutrientAdditionRepository.HardDelete(na);
+
             }
             foreach (var le in DbBatch.LogEntries)
             {
                 le.IsDeleted = true;
-                _repositoryManager.BatchLogEntryRepository.Delete(le);
+                _repositoryManager.BatchLogEntryRepository.HardDelete(le);
             }
             foreach (var ub in DbBatch.UserBatches)
             {
                 ub.IsDeleted = true;
-                _repositoryManager.UserBatchRepository.Delete(ub);
+                _repositoryManager.UserBatchRepository.HardDelete(ub);
             }
 
             DbBatch.IsDeleted = true;
-            _repositoryManager.BatchRepository.Delete(DbBatch);
+            _repositoryManager.BatchRepository.HardDelete(DbBatch);
+#pragma warning restore CS0618 // Hard Delete Approved
             await _repositoryManager.UnitOfWork.SaveChangesAsync(cancellationToken);
             return batchDto;
         }

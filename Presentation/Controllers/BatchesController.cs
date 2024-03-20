@@ -32,7 +32,24 @@ namespace Presentation.Controllers
         //    return Ok(BatchesDto);
         //}
 
-        [HttpGet("{id:guid}")]
+        //[HttpGet("{id:guid}")]
+        //public async Task<IActionResult> Share(Guid id, CancellationToken cancellationToken)
+        //{
+        //    var BatchDto = await _serviceManager.BatchService.GetByIdAsync(_userId, id, cancellationToken);
+        //    return Ok(BatchDto);
+        //}
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("Share/{id:guid}")]
+        public async Task<IActionResult> ShareById(Guid id, CancellationToken cancellationToken)
+        {
+            var BatchDto = await _serviceManager.BatchService.ShareByIdAsync(_userId, id, cancellationToken);
+            return Ok(BatchDto);
+        }
+
+        [HttpGet]
+        [Route("Batch/{id:guid}")]
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
         {
             var BatchDto = await _serviceManager.BatchService.GetByIdAsync(_userId, id, cancellationToken);
@@ -73,11 +90,12 @@ namespace Presentation.Controllers
 
         [HttpPost]
         [Route("Create")]
-        public async Task<IActionResult> Create([FromBody] BatchDto batchDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> Create(CancellationToken cancellationToken)
         {
             //This endpoint needs optimizing.
 
             //create the batch
+            BatchDto batchDto = new BatchDto();
             batchDto.OwnerUserId = _userId;
             var SavedBatchDto = await _serviceManager.BatchService.Create(batchDto, cancellationToken);
 
@@ -87,7 +105,7 @@ namespace Presentation.Controllers
                 BatchId = batchDto.Id,
                 UserId = _userId
             };
-            var UserBatchDto = await _serviceManager.UserBatchService.Create(_userId, SavedBatchDto.Id, Guid.Empty, cancellationToken);
+            await _serviceManager.UserBatchService.Create(_userId, SavedBatchDto.Id, Guid.Empty, cancellationToken);
 
             return Ok(SavedBatchDto);
         }

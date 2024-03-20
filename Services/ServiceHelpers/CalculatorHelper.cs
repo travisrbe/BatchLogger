@@ -17,7 +17,7 @@ namespace Services.ServiceHelpers
         }
         public void CalculateSugarGramsPerLiter(ref Batch batch)
         {
-            if (batch.Brix == null) CalculateBrix(ref batch);
+            CalculateBrix(ref batch);
             if (batch.Brix != null)
             {
                 //Sugar g/L = Brix * SpecificGravity * 10. See my white paper to understand why.
@@ -31,7 +31,7 @@ namespace Services.ServiceHelpers
 
         public void CalculateTargetYan(ref Batch batch)
         {
-            if (batch.SugarPpm == null) CalculateSugarGramsPerLiter(ref batch);
+            CalculateSugarGramsPerLiter(ref batch);
 
             if (batch.SugarPpm != null && batch.Yeast != null)
             {

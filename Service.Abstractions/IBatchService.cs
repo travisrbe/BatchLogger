@@ -5,6 +5,7 @@ namespace Service.Abstractions
     public interface IBatchService
     {
         Task<IEnumerable<BatchDto?>> GetAllAsync(CancellationToken cancellationToken = default);
+        Task<BatchDto> ShareByIdAsync(string userId, Guid id, CancellationToken cancellationToken = default);
         Task<BatchDto> GetByIdAsync(string userId, Guid id, CancellationToken cancellationToken = default);
         Task<IEnumerable<BatchDto?>> GetByUserIdAsync(string id, CancellationToken cancellationToken = default);
         Task<IEnumerable<BatchDto?>> GetByOwnedAsync(string id, CancellationToken cancellationToken= default);

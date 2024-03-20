@@ -26,6 +26,7 @@ namespace Contracts
         public double? RemainderNutrientGrams { get; set; }
         public bool IsComplete { get; set; } = false;
         public bool IsLocked { get; set; }
+        public bool IsPublic { get; set; }
         public DateTime? CreateDate { get; set; }
         public DateTime? UpdateDate { get; set; }
 

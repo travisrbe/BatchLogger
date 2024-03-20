@@ -70,6 +70,7 @@ namespace Domain.Entities
         public bool IsComplete { get; set; }
         public bool IsDeleted { get; set; }
         public bool IsLocked { get; set; }
+        public bool IsPublic { get; set; }
         public DateTime? CreateDate { get; set; }
         public DateTime? UpdateDate { get; set; }
 
